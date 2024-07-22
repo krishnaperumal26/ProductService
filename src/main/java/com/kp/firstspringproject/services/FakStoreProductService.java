@@ -3,12 +3,16 @@ package com.kp.firstspringproject.services;
 import com.kp.firstspringproject.dtos.FakeStoreProductDto;
 import com.kp.firstspringproject.models.Category;
 import com.kp.firstspringproject.models.Product;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpMessageConverterExtractor;
+import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -56,9 +60,34 @@ public class FakStoreProductService implements ProductService{
 
     @Override
     public List<Product> getAllProduct() {
-        return List.of();
+
+        FakeStoreProductDto[] facFakeStoreProductDtos   = restTemplate.getForObject("https://fakestoreapi.com/products/",FakeStoreProductDto[].class);
+
+        List<Product> response = new ArrayList<>();
+        for(FakeStoreProductDto facFakeStoreProductDto:facFakeStoreProductDtos)
+        {
+            response.add(convertFakeStoreDtoToProduct(facFakeStoreProductDto));
+        }
+
+        return response;
     }
 
+    @Override
+    public Product replaceProduct(Long id, Product product)
+    {
+        FakeStoreProductDto fakeStoreProductDto = new FakeStoreProductDto();
+        fakeStoreProductDto.setTitle(product.getTitle());
+        fakeStoreProductDto.setImage(product.getImage());
+        fakeStoreProductDto.setDescription(product.getDescription());
+
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(fakeStoreProductDto, FakeStoreProductDto.class);
+        HttpMessageConverterExtractor<FakeStoreProductDto> responseExtractor = new HttpMessageConverterExtractor(FakeStoreProductDto.class, restTemplate.getMessageConverters());
+        FakeStoreProductDto response =  restTemplate.execute("https://fakestoreapi.com/products/"+id, HttpMethod.PUT, requestCallback, responseExtractor);
+
+
+
+        return convertFakeStoreDtoToProduct(response);
+    }
 
 //    Git command
     /*
