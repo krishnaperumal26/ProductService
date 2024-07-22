@@ -65,9 +65,27 @@ public class FakStoreProductService implements ProductService{
     git init
     git add.
     git commit -m "Implemented3rd party API"
-    git push -m origin main
+    git push -m origin main (git branch -M main
+
     git remote add origin https://github.com/krishnaperumal26/ProductService.git
-    git push -m origin main
+    git push -u origin main
+
+
+Command from GIt
+FOr New:
+echo "# ProductService" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/krishnaperumal26/ProductService.git
+git push -u origin main
+
+
+for existing repo form cmd
+git remote add origin https://github.com/krishnaperumal26/ProductService.git
+git branch -M main
+git push -u origin main
 
      */
 
