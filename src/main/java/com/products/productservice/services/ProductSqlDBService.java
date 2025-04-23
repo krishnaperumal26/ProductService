@@ -11,9 +11,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Service("productDBService")
+@Service
 @Primary
 public class ProductSqlDBService implements ProductService {
+
 
     ProductRepository productRepository;
     CategoryRepository categoryRepository;

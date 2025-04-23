@@ -1,9 +1,13 @@
 package com.products.productservice.dtos;
 
 import com.products.productservice.model.Product;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductResponseDto {
     private long id;
     private String name;

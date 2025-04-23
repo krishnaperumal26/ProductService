@@ -36,6 +36,7 @@ public class ProductController {
 //            redisTemplate.opsForHash().put("PRODUCTMAP","PRODUCT_"+id,product);
 //        }
 
+
         Product product = productService.getProductById(id);
         ProductResponseDto productResponseDto =  ProductResponseDto.fromEntity(product);
 
