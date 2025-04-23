@@ -1,12 +1,15 @@
 package com.products.productservice.dtos;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class FakeStoreProductRequestDto {
-    private String title;
-    private double price;
-    private String description;
-    private String category;
-    private String image;
+@Getter
+@Setter
+public class FakeStoreProductRequestDto
+{
+    String title;
+    double price;
+    String description;
+    String image;
+    String category;
 }

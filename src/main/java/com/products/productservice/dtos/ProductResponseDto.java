@@ -1,28 +1,27 @@
 package com.products.productservice.dtos;
 
-import com.products.productservice.model.Category;
 import com.products.productservice.model.Product;
-import com.products.productservice.model.Rating;
 import lombok.Data;
 
 @Data
 public class ProductResponseDto {
     private long id;
-    private String title;
-    private double price;
+    private String name;
     private String description;
+    private String imageUrl;
+    private double price;
     private String category;
-    private String image;
-//    private Rating rating;
 
-    public ProductResponseDto fromEntity(Product product) {
-        id = product.getId();
-        title = product.getTitle();
-        price = product.getPrice();
-        description = product.getDescription();
-        category = product.getCategory().getName();
-        image = product.getImage();
-//        rating = product.getRating();
-        return this;
+
+    public static ProductResponseDto fromEntity(Product product) {
+        if(product == null) return null;
+        ProductResponseDto productResponseDto = new ProductResponseDto();
+        productResponseDto.setId(product.getId());
+        productResponseDto.setName(product.getName());
+        productResponseDto.setDescription(product.getDescription());
+        productResponseDto.setImageUrl(product.getImageUrl());
+        productResponseDto.setPrice(product.getPrice());
+        productResponseDto.setCategory(product.getCategory().getName());
+        return productResponseDto;
     }
 }

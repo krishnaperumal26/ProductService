@@ -2,34 +2,31 @@ package com.products.productservice.dtos;
 
 import com.products.productservice.model.Category;
 import com.products.productservice.model.Product;
-import com.products.productservice.model.Rating;
 import lombok.Data;
 
 @Data
-public class FakeStoreProductDto {
+public class FakeStoreProductDto
+{
     private long id;
     private String title;
     private double price;
-    private String description;
     private String category;
+    private String description;
     private String image;
-//    private Rating rating;
 
     public Product toProduct()
     {
         Product product = new Product();
         product.setId(id);
-        product.setTitle(title);
-        product.setPrice(price);
         product.setDescription(description);
-        product.setImage(image);
-//        product.setRating(rating);
+        product.setName(title);
+        product.setPrice(price);
+        product.setImageUrl(image);
 
-        Category categoryObj = new Category();
-        categoryObj.setName(category);
+        Category category1 = new Category();
+        category1.setName(category);
 
-        product.setCategory(categoryObj);
+        product.setCategory(category1);
         return product;
     }
 }
-

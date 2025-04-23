@@ -3,12 +3,12 @@ package com.products.productservice.dtos;
 import lombok.Data;
 
 @Data
-public class CreateFakeStoreProductDto {
+public class CreateProductRequestDto {
 
-    private String title;
-    private double price;
+    private String name;
     private String description;
     private String category;
-    private String image;
+    private double price;
+    private String imageUrl;
 
 }

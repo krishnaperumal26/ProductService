@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDto> handleNullPointerException()
     {
         ErrorDto errorDto = new ErrorDto();
-        errorDto.setMessage("This is Null pointer exception");
+        errorDto.setMessage("Null pointer exception");
         errorDto.setStatus("Failure..");
         ResponseEntity<ErrorDto> response = new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
 
