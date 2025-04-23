@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service("productDBService")
-@Primary
+//@Primary
 public class ProductSqlDBService implements ProductService {
 
     ProductRepository productRepository;
