@@ -1,6 +1,8 @@
 package com.products.productservice.controller;
 
 import com.products.productservice.dtos.CreateProductRequestDto;
+import com.products.productservice.dtos.FakeStoreProductDto;
+import com.products.productservice.dtos.FakeStoreProductRequestDto;
 import com.products.productservice.dtos.ProductResponseDto;
 import com.products.productservice.exception.ProductNotFoundException;
 import com.products.productservice.model.Product;
@@ -29,7 +31,7 @@ public class ProductController {
     public ResponseEntity<ProductResponseDto> getProductById(
             @PathVariable("id") long id ) throws ProductNotFoundException {
 
-//        Product redisProduct = (Product)redisTemplate.opsForHash().get("PRODUCTMAP","PRODUCT_"+id);
+        Product productFromCache = (Product)redisTemplate.opsForHash().get("PRODUCTMAP","PRODUCT_"+id);
 //        Product product = redisProduct;
 //        if(redisProduct == null) {
 //            product = productService.getProductById(id);

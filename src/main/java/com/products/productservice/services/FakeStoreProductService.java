@@ -5,6 +5,7 @@ import com.products.productservice.dtos.FakeStoreProductRequestDto;
 import com.products.productservice.exception.ProductNotFoundException;
 import com.products.productservice.model.Product;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,19 +17,31 @@ import java.util.List;
 public class FakeStoreProductService implements ProductService{
 
     RestTemplate restTemplate;
-    public FakeStoreProductService(RestTemplate restTemplate) {
+    RedisTemplate<String, Object> redisTemplate;
+
+    public FakeStoreProductService(RestTemplate restTemplate, RedisTemplate<String, Object> redisTemplate) {
         this.restTemplate = restTemplate;
+        this.redisTemplate = redisTemplate;
     }
     String fakeStoreUrl = "https://fakestoreapi.com/products/";
     @Override
     public Product getProductById(long id) throws ProductNotFoundException {
+        Product productFromCache = (Product)redisTemplate.opsForHash().get("PRODUCTMAP","PRODUCT_"+id);
+//        Product productFromCache = (Product)redisTemplate.opsForValue().get(String.valueOf(id));
+        if(productFromCache!=null)
+        {
+            return productFromCache;
+        }
         FakeStoreProductDto fakeStoreProductDto =
                    restTemplate.getForObject(fakeStoreUrl + id, FakeStoreProductDto.class);
         if(fakeStoreProductDto==null)
         {
             throw new ProductNotFoundException("Product is not found for Id "+id);
         }
-        return fakeStoreProductDto.toProduct();
+        Product productFromFakeStore  = fakeStoreProductDto.toProduct();
+//        redisTemplate.opsForValue().set(String.valueOf(id), productFromFakeStore);
+        redisTemplate.opsForHash().put("PRODUCTMAP","PRODUCT_"+id,productFromFakeStore);
+        return productFromFakeStore;
     }
 
     @Override
