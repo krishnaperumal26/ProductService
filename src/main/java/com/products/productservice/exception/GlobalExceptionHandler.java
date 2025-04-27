@@ -6,27 +6,39 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * Global exception handler for the application.
+ * Provides centralized exception handling for all controllers.
+ * Uses @RestControllerAdvice to apply to all REST controllers.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Handles NullPointerException and returns a standardized error response.
+     *
+     * @return A ResponseEntity containing an ErrorDto with error details and HTTP status 500.
+     */
     @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<ErrorDto> handleNullPointerException()
-    {
+    public ResponseEntity<ErrorDto> handleNullPointerException() {
         ErrorDto errorDto = new ErrorDto();
         errorDto.setMessage("Null pointer exception");
         errorDto.setStatus("Failure..");
-        ResponseEntity<ErrorDto> response = new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
 
-        return response;
+        return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /**
+     * Handles ProductNotFoundException and returns a standardized error response.
+     *
+     * @param e The ProductNotFoundException instance containing error details.
+     * @return A ResponseEntity containing an ErrorDto with error details and HTTP status 404.
+     */
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ErrorDto> handleProductNotFoundException(ProductNotFoundException e)
-    {
+    public ResponseEntity<ErrorDto> handleProductNotFoundException(ProductNotFoundException e) {
         ErrorDto errorDto = new ErrorDto();
         errorDto.setMessage(e.getMessage());
         errorDto.setStatus("Failure..");
-        ResponseEntity<ErrorDto> response = new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
-        return response;
+        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
     }
 }

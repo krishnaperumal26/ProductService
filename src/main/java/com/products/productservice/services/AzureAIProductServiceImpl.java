@@ -1,0 +1,124 @@
+package com.products.productservice.services;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.products.productservice.utils.HttpUrlConfig;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+
+/**
+ * Service implementation for interacting with Azure AI services.
+ * This class provides methods to generate AI-based responses and images.
+ */
+@Service
+@Lazy
+@NoArgsConstructor
+public class AzureAIProductServiceImpl implements IAzureAIImageService, IAzureAIChatService {
+
+    @Value("${azure.openai.api-key.AiChatKey}")
+    private String azureChatApiKey; // API key for Azure Chat service
+
+    @Value("${azure.openai.api-key.AiImageKey}")
+    private String azureImageApiKey; // API key for Azure Image service
+
+    @Value("${product.image.path}")
+    private String productImagePath; // Path to save generated product images
+
+    @Value("${azure.openai.endpoint.AiChatURL}")
+    private String azureChatUrl; // Endpoint URL for Azure Chat service
+
+    @Value("${azure.openai.endpoint.AiImageURL}")
+    private String azureImageUrl; // Endpoint URL for Azure Image service
+
+    /**
+     * Generates a response from Azure AI Chat service based on the provided prompts.
+     *
+     * @param systemPrompt The system-level prompt to guide the AI's behavior.
+     * @param userPrompt   The user-level prompt to specify the query or task.
+     * @return The generated response from Azure AI Chat service, or null if an error occurs.
+     */
+    @Override
+    public String GenerateResponse(String systemPrompt, String userPrompt) {
+        // Construct the request body for the Azure Chat API
+        String requestBody = "{\n" +
+                "  \"messages\":[\n" +
+                "\t{\n" +
+                "\t\t\"role\": \"system\",\n" +
+                "\t\t\"content\": \"" + systemPrompt + "\"\n" +
+                "\t},\n" +
+                "\t{\n" +
+                "\t\t\"role\": \"user\",\n" +
+                "\t\t\"content\": \"" + userPrompt + "\"\n" +
+                "\t}\n" +
+                "],\n" +
+                "  \"frequency_penalty\": 0,\n" +
+                "  \"presence_penalty\": 0,\n" +
+                "  \"max_completion_tokens\": 800,\n" +
+                "  \"stop\": null\n" +
+                "}";
+        try {
+            // Send the POST request and parse the response
+            String responseBody = HttpUrlConfig.sendPostRequest(azureChatUrl, azureChatApiKey, requestBody);
+            if (responseBody != null) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode rootNode = objectMapper.readTree(responseBody);
+                // Extract the content of the response
+                return rootNode.at("/choices/0/message/content").asText();
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception
+        }
+        return null; // Return null if an error occurs
+    }
+
+    /**
+     * Generates an image using Azure AI Image service based on the provided prompt.
+     *
+     * @param prompt    The prompt describing the image to generate.
+     * @param imageName The name to save the generated image file.
+     * @return The file path of the saved image, or null if an error occurs.
+     */
+    @Override
+    public String GenerateImage(String prompt, String imageName) {
+        // Construct the request body for the Azure Image API
+        String requestBody = "{\n" +
+                "    \"prompt\": \"" + prompt + "\",\n" +
+                "    \"n\": 1,\n" +
+                "    \"size\": \"1024x1024\"\n" +
+                "}";
+        try {
+            // Send the POST request and parse the response
+            String responseBody = HttpUrlConfig.sendPostRequest(azureImageUrl, azureImageApiKey, requestBody);
+            if (responseBody != null) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode rootNode = objectMapper.readTree(responseBody);
+                // Extract the image URL from the response
+                String imageUrl = rootNode.at("/data/0/url").asText();
+                // Define the output file path
+                String outputFilePath = productImagePath + "\\" + imageName + "_" + System.currentTimeMillis() + ".png";
+                try (BufferedInputStream inputStream = new BufferedInputStream(new URL(imageUrl).openStream());
+                     FileOutputStream fileOutputStream = new FileOutputStream(outputFilePath)) {
+                    // Download and save the image
+                    byte[] dataBuffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(dataBuffer, 0, 1024)) != -1) {
+                        fileOutputStream.write(dataBuffer, 0, bytesRead);
+                    }
+                    return outputFilePath; // Return the file path of the saved image
+                } catch (IOException e) {
+                    System.err.println("Failed to download the image: " + e.getMessage()); // Log the error
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception
+        }
+        return null; // Return null if an error occurs
+    }
+}
