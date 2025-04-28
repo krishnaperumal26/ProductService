@@ -1,20 +1,77 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+#ProductService
+ProductService is a Spring Boot application that provides a RESTful API for managing products, categories, and AI-generated content.
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+#Features
+Product management (CRUD operations)
+Category management with eager loading of associated products
+Advanced product search with pagination and sorting
+Soft deletion of products
+Integration with Azure OpenAI for AI chat completions
+AI image generation with Azure OpenAI
+Search query logging
+Redis caching
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+#Technologies
+Java
+Spring Boot
+Spring Data JPA
+MySQL Database
+Redis Cache
+Azure OpenAI API
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+#Prerequisites
+JDK 17 or later
+Maven
+MySQL Server
+Redis Server
+Azure OpenAI API keys (for AI features)
+
+#Setup Instructions
+Clone the repository
+Configure the database in application.properties
+Configure Redis in application.properties
+Configure Azure OpenAI API keys in application.properties
+Build the application: mvn clean install
+Run the application: mvn spring-boot:run
+
+#API Endpoints
+##Products
+GET /products - Get all products
+GET /products/{id} - Get a product by ID
+POST /products - Create a new product
+PUT /products/{id} - Update a product
+DELETE /products/{id} - Soft delete a product
+
+##Categories
+GET /categories - Get all categories
+GET /categories/{name} - Get a category by name
+POST /categories - Create a new category
+
+##Search
+GET /search?query={query}&pageNumber={pageNumber}&pageSize={pageSize}&sortParam={sortParam} - Search for products
+
+#Data Models
+The application uses several entities:
+
+
+Product - Represents a product
+Category - Represents a product category
+SearchLog - Logs search operations
+AIGenerationType - Types of AI generation
+AIGenerationLog - Logs AI generation operations
+All entities extend the BaseModel which provides common fields:
+
+
+id
+createdAt
+lastModified
+isDeleted
+
+#AI Features
+The application integrates with Azure OpenAI to provide:
+AI chat completions
+AI image generation for products
+
+##Contributing
+Contributions are welcome. Please feel free to submit a Pull Request.
