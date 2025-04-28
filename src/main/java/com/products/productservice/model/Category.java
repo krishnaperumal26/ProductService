@@ -13,21 +13,24 @@ import java.util.List;
 /**
  * Entity class representing a Category.
  * Extends BaseModel and implements Serializable for persistence and serialization.
+ * A Category is used to group related products together.
  */
 @Data
 @Entity
 public class Category extends BaseModel implements Serializable {
 
     /**
-     * A brief description of the category.
+     * The name of the category.
+     * This field provides a brief description or title for the category.
      */
-    private String description;
+    private String name;
 
     /**
      * The list of products associated with this category.
-     * This relationship is mapped by the 'category' field in the Product entity.
-     * Products are fetched eagerly using JOIN fetch mode.
-     * Ignored during JSON serialization to prevent circular references.
+     * This is a one-to-many relationship, where a category can have multiple products.
+     * - Mapped by the 'category' field in the Product entity.
+     * - Fetched eagerly using JOIN fetch mode to optimize performance.
+     * - Ignored during JSON serialization to prevent circular references.
      */
     @OneToMany(mappedBy = "category")
     @Fetch(FetchMode.JOIN)

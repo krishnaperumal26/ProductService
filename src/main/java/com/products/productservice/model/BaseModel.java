@@ -27,22 +27,21 @@ public class BaseModel implements Serializable {
     private long id;
 
     /**
-     * The name of the entity.
-     */
-    private String name;
-
-    /**
      * The timestamp when the entity was created.
+     * This field is typically set automatically when the entity is persisted.
      */
     private Date createdAt;
 
     /**
      * The timestamp when the entity was last modified.
+     * This field is typically updated automatically when the entity is updated.
      */
     private Date lastModified;
 
     /**
-     * Flag indicating whether the entity is marked as deleted.
+     * Indicates whether the entity is marked as deleted.
+     * This field is typically used for soft deletion.
      */
     private boolean isDeleted;
+
 }

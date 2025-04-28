@@ -4,6 +4,11 @@ import com.products.productservice.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +17,7 @@ import java.util.Optional;
  * Repository interface for managing Product entities.
  * Extends JpaRepository to provide CRUD operations and custom query methods.
  */
+@Repository
 public interface IProductRepository extends JpaRepository<Product, Long> {
 
     /**
@@ -20,6 +26,7 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
      * @param id The ID of the Product to find.
      * @return An Optional containing the Product if found, or empty if not found.
      */
+    @Query("SELECT p FROM Product p WHERE p.id = :id AND p.isDeleted = false")
     Optional<Product> findById(long id);
 
     /**
@@ -27,6 +34,7 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
      *
      * @return A list of all Products.
      */
+    @Query("SELECT p FROM Product p WHERE p.isDeleted = false")
     List<Product> findAll();
 
     /**
@@ -38,11 +46,25 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
     Product save(Product product);
 
     /**
+     * Performs a soft delete by setting the isDeleted field to true for the given Product ID.
+     *
+     * @param id The ID of the Product to soft delete.
+     * @return The number of rows affected.
+     */
+    @Modifying
+    @Transactional
+    @Query("UPDATE Product SET isDeleted = true WHERE id = :id")
+     int softDeleteById(@Param("id") long id);
+
+
+    /**
      * Searches for Products with names containing the specified query string.
      *
      * @param query    The search query to match against Product names.
      * @param pageable The pagination information.
      * @return A paginated list of Products matching the search query.
      */
-    Page<Product> findByNameContaining(String query, Pageable pageable);
+    @Query("SELECT p FROM Product p WHERE p.name LIKE %:query% AND p.isDeleted = false")
+    Page<Product> findByNameContaining(@Param("query") String query, Pageable pageable);
+
 }

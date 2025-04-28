@@ -16,6 +16,12 @@ import java.io.Serializable;
 public class Product extends BaseModel implements Serializable {
 
     /**
+     * The name of the product.
+     * This field provides a brief title or identifier for the product.
+     */
+    private String name;
+
+    /**
      * A detailed description of the product.
      * Limited to 10,000 characters.
      */
@@ -24,17 +30,20 @@ public class Product extends BaseModel implements Serializable {
 
     /**
      * The URL of the product's image.
+     * This field stores the location of the product's image resource.
      */
     private String imageUrl;
 
     /**
      * The price of the product.
+     * This field represents the cost of the product in the system's currency.
      */
     private double price;
 
     /**
      * The category to which the product belongs.
      * Many products can belong to one category.
+     * This is a many-to-one relationship with the Category entity.
      */
     @ManyToOne
     private Category category;
