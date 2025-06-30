@@ -29,7 +29,7 @@ import java.util.Optional;
 @Lazy
 @NoArgsConstructor
 @AllArgsConstructor
-public class AzureAIProductServiceImpl implements IAzureAIImageService, IAzureAIChatService {
+public class AzureAIProductServiceImpl implements IAIImageService, IAIChatService {
 
     /**
      * API key for Azure Chat service.

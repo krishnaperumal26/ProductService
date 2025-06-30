@@ -1,5 +1,6 @@
 package com.products.productservice.repositories;
 
+import com.products.productservice.model.Category;
 import com.products.productservice.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -67,4 +68,18 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:query% AND p.isDeleted = false")
     Page<Product> findByNameContaining(@Param("query") String query, Pageable pageable);
 
+    /**
+     * Finds similar products within the same category based on price range, excluding a specific product ID.
+     *
+     * @param category  The category of the products to search within.
+     * @param minPrice  The minimum price of the products to include in the search.
+     * @param maxPrice  The maximum price of the products to include in the search.
+     * @param excludeId The ID of the product to exclude from the search results.
+     * @return A list of products that match the specified criteria.
+     */
+    @Query("SELECT p from Product p where p.category=:category and p.price between :minPrice and :maxPrice and p.id !=:excludeId and p.isDeleted = false")
+    List<Product> findSimilarInCategory(@Param("category") Category category,
+                                        @Param("minPrice") double minPrice,
+                                        @Param("maxPrice") double maxPrice,
+                                        @Param("excludeId") long excludeId);
 }

@@ -114,14 +114,14 @@ public class ProductSqlDBService implements IProductService {
         // Generate image URL if not provided
         if (imageUrl == null || imageUrl.isEmpty()) {
             aiGenerationImageLog = new AIGenerationLog(); // Create log entry for image generation
-            imageUrl = GenerateImageFromAIBasedOnProduct(product, aiGenerationImageLog);
+            imageUrl = generateImageFromAIBasedOnProduct(product, aiGenerationImageLog);
         }
         product.setImageUrl(imageUrl);
 
         // Generate description if not provided
         if (description == null || description.isEmpty()) {
             aiGenerationDescriptionLog = new AIGenerationLog(); // Create log entry for description generation
-            description = GenerateDescriptionFromAIBasedOnProduct(product, aiGenerationDescriptionLog);
+            description = generateDescriptionFromAIBasedOnProduct(product, aiGenerationDescriptionLog);
         }
         product.setDescription(description);
 
@@ -171,7 +171,7 @@ public class ProductSqlDBService implements IProductService {
      * @param aiGenerationLog The log object to record the generation details.
      * @return The generated image URL or file path.
      */
-    public String GenerateImageFromAIBasedOnProduct(Product product, AIGenerationLog aiGenerationLog) {
+    public String generateImageFromAIBasedOnProduct(Product product, AIGenerationLog aiGenerationLog) {
         // Create a prompt for Azure AI to generate an image based on product details
         String prompt = "Generate image for " + product.getCategory().getName() + " product named " + product.getName() + ". Add small text 'AI Generated Image' in the Image bottom";
 
@@ -196,7 +196,7 @@ public class ProductSqlDBService implements IProductService {
      * @param aiGenerationLog The log object to record the generation details.
      * @return The generated product description.
      */
-    public String GenerateDescriptionFromAIBasedOnProduct(Product product, AIGenerationLog aiGenerationLog) {
+    public String generateDescriptionFromAIBasedOnProduct(Product product, AIGenerationLog aiGenerationLog) {
         // Create system and user prompts for Azure AI to generate a product description
         String systemPrompt = "You are product Content writer to give product very short description in 300 to 400 characters";
         String userPrompt = "Generate 300 to 400 characters professional marketing description for a " + product.getCategory().getName() +
@@ -276,13 +276,13 @@ public class ProductSqlDBService implements IProductService {
         // Generate image URL if not provided
         if (imageUrl == null || imageUrl.isEmpty()) {
             aiGenerationImageLog = new AIGenerationLog();
-            imageUrl = GenerateImageFromAIBasedOnProduct(product, aiGenerationImageLog);
+            imageUrl = generateImageFromAIBasedOnProduct(product, aiGenerationImageLog);
         }
 
         // Generate description if not provided
         if (description == null || description.isEmpty()) {
             aiGenerationChatLog = new AIGenerationLog();
-            description = GenerateDescriptionFromAIBasedOnProduct(product, aiGenerationChatLog);
+            description = generateDescriptionFromAIBasedOnProduct(product, aiGenerationChatLog);
         }
         product.setImageUrl(imageUrl);
         product.setDescription(description);
